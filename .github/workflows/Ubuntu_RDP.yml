@@ -1,0 +1,61 @@
+name: Ubuntu RDP
+
+on:
+  workflow_dispatch:
+    inputs:
+      hostname:
+        description: 'Enter Hostname:'
+        required: false
+        default: ubuntu
+        type: string
+      username:
+        description: 'Enter Username:'
+        required: false
+        default: user
+        type: string
+      password:
+        description: 'Enter Password:'
+        required: false
+        default: root
+        type: string
+      Pin:
+        description: 'Enter a Pin (more or equal to 6 digits)'
+        required: false
+        default: 123456
+        type: number
+      CRP:
+        description: 'Visit at http://remotedesktop.google.com/headless and, copy a command after authentication'
+        required: false
+        type: string
+
+env:
+  hostname: ${{ inputs.hostname }}
+  username: ${{ inputs.username }}
+  password: ${{ inputs.password }}
+  Pin: ${{ inputs.Pin }}
+  CRP: ${{ inputs.CRP }}
+
+jobs:
+  build:
+    name: Deploy Server
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Clean up storage
+        uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Create server
+        run: | 
+          chmod +x Ubuntu_RDP.sh
+          ./Ubuntu_RDP.sh
+      
+      - name: Keep running
+        run: |
+          chmod +x Keep_Running.sh
+          ./Keep_Running.sh
